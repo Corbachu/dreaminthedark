@@ -1,0 +1,36 @@
+Only in SDL_mixer-1.2.4: Makefile.dc
+diff -u -r -x '*.[oa]' SDL_mixer-1.2.4.orig/timidity/common.c SDL_mixer-1.2.4/timidity/common.c
+--- SDL_mixer-1.2.4.orig/timidity/common.c	2002-05-21 01:09:54.000000000 +0900
++++ SDL_mixer-1.2.4/timidity/common.c	2002-10-04 02:45:09.000000000 +0900
+@@ -31,6 +31,10 @@
+ #include "output.h"
+ #include "controls.h"
+ 
++#ifdef DC
++#undef ENOENT
++#endif
++
+ /* I guess "rb" should be right for any libc */
+ #define OPEN_MODE "rb"
+ 
+diff -u -r -x '*.[oa]' SDL_mixer-1.2.4.orig/timidity/config.h SDL_mixer-1.2.4/timidity/config.h
+--- SDL_mixer-1.2.4.orig/timidity/config.h	2001-03-14 17:42:58.000000000 +0900
++++ SDL_mixer-1.2.4/timidity/config.h	2002-10-04 02:50:23.000000000 +0900
+@@ -206,12 +206,17 @@
+ 
+ /* You could specify a complete path, e.g. "/etc/timidity.cfg", and
+    then specify the library directory in the configuration file. */
++#ifdef DC
++#define CONFIG_FILE	"/cd/timidity.cfg"
++#define DEFAULT_PATH	"/cd/timidity"
++#else
+ #define CONFIG_FILE	"timidity.cfg"
+ #ifdef __WIN32__
+ #define DEFAULT_PATH	"\\TIMIDITY"
+ #else
+ #define DEFAULT_PATH	"/usr/local/lib/timidity"
+ #endif
++#endif
+ 
+ /* These affect general volume */
+ #define GUARD_BITS 3
