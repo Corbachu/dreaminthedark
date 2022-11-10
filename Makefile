@@ -66,7 +66,7 @@ OPTIMISE=-O0
 CC=kos-cc
 CXX=kos-c++
 
-KOS_CFLAGS=-O0 -fno-omit-frame-pointer -fno-common -fno-builtin -fexceptions -ffast-math -fno-strict-aliasing -Wall -pipe -ml -m4-single-only -DUNIX -D_GNU_SOURCE=1 -D_REENTRANT -DINLINE_G=__inline__
+KOS_CFLAGS=-O0 -fno-omit-frame-pointer -fno-common -fno-builtin -fexceptions -ffast-math -fno-strict-aliasing -Wall -pipe -ml -m4-single-only -D_GNU_SOURCE=1 -D_REENTRANT -DINLINE_G=__inline__
 #-DDATA_PREFIX="/cd/" 
 LDFLAGS=-lm -Wl,--warn-common
 #Map=output.map
@@ -242,10 +242,11 @@ clean:
 #	rm -f libgl/libGLdc.a libgl/GL/*.o
 
 halfclean:
-	rm -f $(PROGRAM) $(OBJDIR)/ditd/*.*
+	rm -f $(PROGRAM) $(OBJDIR)/epi/*.* $(OBJDIR)/ditd/*.*
 
 makedirs:
 	mkdir -p $(OBJDIR)/ditd
+	mkdir -p $(OBJDIR)/ditd/system
 	mkdir -p $(OBJDIR)/epi
 
 #updaterev:
@@ -376,9 +377,7 @@ DITD_OBJS= \
     $(OBJDIR)/ditd/vars.o \
     $(OBJDIR)/ditd/version.o \
     $(OBJDIR)/ditd/videoMode.o \
-	$(OBJDIR)/ditd/zv.o \
-	$(OBJDIR)/ditd/writelog.o 
-
+	$(OBJDIR)/ditd/zv.o 
 
 #$(OBJDIR)/indark/%.o: src/%.cc
 #	$(CXX) $(CFLAGS) -o $@ -c $<
@@ -389,49 +388,49 @@ $(OBJDIR)/ditd/%.o: src/%.c
 
 # ---------- EPI ---------------
 
-EPI_OBJS= \
-	$(OBJDIR)/epi/arrays.o         \
-	$(OBJDIR)/epi/bytearray.o      \
-	$(OBJDIR)/epi/errors.o         \
-	$(OBJDIR)/epi/exe_path.o       \
-	$(OBJDIR)/epi/file.o           \
-	$(OBJDIR)/epi/filesystem.o     \
-	$(OBJDIR)/epi/file_memory.o    \
-	$(OBJDIR)/epi/file_sub.o       \
-	$(OBJDIR)/epi/stb_image.o      \
-	$(OBJDIR)/epi/stb_image_write.o \
-	$(OBJDIR)/epi/image_data.o     \
-	$(OBJDIR)/epi/image_jpeg.o     \
-	$(OBJDIR)/epi/image_png.o      \
-	$(OBJDIR)/epi/image_tga.o      \
-	$(OBJDIR)/epi/math_angle.o     \
-	$(OBJDIR)/epi/math_bbox.o      \
-	$(OBJDIR)/epi/math_color.o     \
-	$(OBJDIR)/epi/math_crc.o       \
-	$(OBJDIR)/epi/math_md5.o       \
-	$(OBJDIR)/epi/math_oddity.o    \
-	$(OBJDIR)/epi/math_matrix.o    \
-	$(OBJDIR)/epi/math_vector.o    \
-	$(OBJDIR)/epi/math_random.o    \
-	$(OBJDIR)/epi/memmanager.o     \
-	$(OBJDIR)/epi/mersenne_twist.o \
-	$(OBJDIR)/epi/path.o           \
-	$(OBJDIR)/epi/str_format.o     \
-	$(OBJDIR)/epi/sound_data.o     \
-	$(OBJDIR)/epi/sound_gather.o   \
-	$(OBJDIR)/epi/sound_wav.o      \
-	$(OBJDIR)/epi/timestamp.o      \
-	$(OBJDIR)/epi/utility.o        \
-	$(OBJDIR)/epi/epi_dreamcast.o  \
-	$(OBJDIR)/epi/filesystem_linux.o
+# EPI_OBJS= \
+	# $(OBJDIR)/epi/arrays.o         \
+	# $(OBJDIR)/epi/bytearray.o      \
+	# $(OBJDIR)/epi/errors.o         \
+	# $(OBJDIR)/epi/exe_path.o       \
+	# $(OBJDIR)/epi/file.o           \
+	# $(OBJDIR)/epi/filesystem.o     \
+	# $(OBJDIR)/epi/file_memory.o    \
+	# $(OBJDIR)/epi/file_sub.o       \
+	# $(OBJDIR)/epi/stb_image.o      \
+	# $(OBJDIR)/epi/stb_image_write.o \
+	# $(OBJDIR)/epi/image_data.o     \
+	# $(OBJDIR)/epi/image_jpeg.o     \
+	# $(OBJDIR)/epi/image_png.o      \
+	# $(OBJDIR)/epi/image_tga.o      \
+	# $(OBJDIR)/epi/math_angle.o     \
+	# $(OBJDIR)/epi/math_bbox.o      \
+	# $(OBJDIR)/epi/math_color.o     \
+	# $(OBJDIR)/epi/math_crc.o       \
+	# $(OBJDIR)/epi/math_md5.o       \
+	# $(OBJDIR)/epi/math_oddity.o    \
+	# $(OBJDIR)/epi/math_matrix.o    \
+	# $(OBJDIR)/epi/math_vector.o    \
+	# $(OBJDIR)/epi/math_random.o    \
+	# $(OBJDIR)/epi/memmanager.o     \
+	# $(OBJDIR)/epi/mersenne_twist.o \
+	# $(OBJDIR)/epi/path.o           \
+	# $(OBJDIR)/epi/str_format.o     \
+	# $(OBJDIR)/epi/sound_data.o     \
+	# $(OBJDIR)/epi/sound_gather.o   \
+	# $(OBJDIR)/epi/sound_wav.o      \
+	# $(OBJDIR)/epi/timestamp.o      \
+	# $(OBJDIR)/epi/utility.o        \
+	# $(OBJDIR)/epi/epi_dreamcast.o  \
+	# $(OBJDIR)/epi/filesystem_linux.o
 
-$(OBJDIR)/epi/%.o: epi/%.cc
-	$(CXX) $(CFLAGS) -o $@ -c $<
+# $(OBJDIR)/epi/%.o: epi/%.cc
+	# $(CXX) $(CFLAGS) -o $@ -c $<
 
 # ---------- FINAL LINK STEP -----------
 
-$(PROGRAM) :$(DITD_OBJS) \	
-			$(EPI_OBJS)	    
+$(PROGRAM) :$(DITD_OBJS) 
+			#$(EPI_OBJS)	    
 	$(CXX) $(CFLAGS) -o $@  $^ $(KOS_START) $(LDFLAGS) -lm -lstdc++ $(KOS_LIBS)
 
 

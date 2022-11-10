@@ -27,8 +27,8 @@
 
 #ifndef WIN32
 #include <SDL.h>
-#include <SDL_thread.h>// Keys
-#include <SDL_opengl.h>// opengl
+#include <SDL_thread.h>//
+//#include <SDL_opengl.h>// opengl
 #endif
 
 //#include "i_local.h"  // FIXME: remove

@@ -163,8 +163,8 @@ void CALLBACK vertexCallback(GLvoid *vertex)
   y = ptr[1];
 
   glColor4ub(255,255,255,255);
-  glTexCoord2d(x/(float)1024,y/(float)512);
-  glVertex3d(x,y,100);
+  // glTexCoord2d(x/(float)1024,y/(float)512);
+  // glVertex3d(x,y,100);
 }
 
 void Sound_Quit(void)

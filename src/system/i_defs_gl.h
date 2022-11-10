@@ -27,7 +27,7 @@
 #define __SYSTEM_SPECIFIC_DEFS_OPENGL__
 
 #define USING_GL_TYPES 1
-#define USE_GL 0
+#define USE_GL 1
 #ifdef LINUX
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -44,7 +44,6 @@
 #ifdef DREAMCAST
 #include "GLdc/include/GL/gl.h"
 #include "GLdc/include/GL/glu.h"
-#include "GLdc/include/GL/gl.h"
 #include "GLdc/include/GL/glext.h"
 #include "GLdc/include/GL/glkos.h"
 #include <dc/vec3f.h>
