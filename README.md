@@ -1,8 +1,11 @@
 ## Dream In the Dark
 ---
-#### DITD ("Dream in the Dark") is an open source version of the engine used in the Alone in the Dark (AITD) and its sequels. It is based off of fitd ("Free in the Dark") and uses the Enhanced DOOM Gaming Engine ("EDGE") as its backend (EITD, or ""EDGE In the Dark").
-
 [![DITD.png](https://i.postimg.cc/gkWNhsjS/DITD.png)](https://postimg.cc/K40PSnnB)
+
+#### DITD ("Dream in the Dark") is an open source version of the engine used in the Alone in the Dark (AITD) and its sequels. 
+
+### It is based off of fitd ("Free in the Dark") and uses the Enhanced DOOM Gaming Engine ("EDGE") as its backend (EITD, or ""EDGE In the Dark").
+
 
 ## (C) 1999-2022 The EDGE Team & [Contributors](https://github.com/3dfxdev/hyper3DGE/blob/master/AUTHORS.md)
 ## (c) FITD Authors/Team ("Free in the Dark") (see Contributors above)
@@ -23,14 +26,14 @@ This is a massive hack-job/WIP until I get things more under control!
 ## Build System for DITD
 ---
 To build DITD, build with "Make -f Makefile.dc" to produce the ELF binary under KOS.
-- Using "Make -f Makefile.dc DREAMINTHEDARK" will produce a disc that can be used for testing.
+- At the command line, typing in "Make DREAMINTHEDARK" will produce a disc image and ELF that can be used for testing.
 - You still need the .PAK files from the registered version of Alone in the Dark (which you should put into /root/ALONE/data)
 #### Libraries
 ---
-SDL 1 (NEED to remove this)
-SDL1_mixer (Currently disabled, scheduled for removal)
-Zlib
-GLdc 
+- SDL 1 (NEED to remove this)
+- SDL1_mixer (Currently disabled, scheduled for removal)
+- Zlib
+- GLdc 
 
 ---
 ## FAQ
@@ -38,12 +41,12 @@ GLdc
 ### What is Dream in the Dark?
 ------------
 
-Years ago, this started as "Dream in the Dark" (AKA DITD), a port of fitd to SH-4/DC. This is a crummy patch up of the code that existed years ago (the YouTube video I had posted at that time), but most if not all of it was completely broken as KOS has evolved greatly since then. 
+Years ago, this started as "Dream in the Dark" (or "DITD"), a port of fitd to SH-4/DC. This is a crummy patch up of the code that existed years ago (the YouTube video I had posted at that time), but most if not all of it was completely broken as KOS has evolved greatly since then. 
 
 EDIT: Found the original 0.1 video of Dream in the Dark (https://www.youtube.com/watch?v=sE_7FkT0aDM)
 
 
-### What Is Supported?
+### What Is Supported? (Notes from original fitd)
 ---
 - AITD1:
     Should be completable. Saving and loading is supported,
