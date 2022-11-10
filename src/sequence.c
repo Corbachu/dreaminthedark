@@ -1,6 +1,7 @@
 #include "sequence.h"
 
-#include <SDL.h>
+#include "i_sdlinc.h"
+//#include <SDL.h>
 
 #include "common.h"
 #include "vars.h"

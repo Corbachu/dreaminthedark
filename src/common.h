@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+//#include "sysconfig.h"
+
 #define NAME "FITD"
 
 #define VERSION "0.101"
@@ -52,8 +54,9 @@
 //#include <gl\glaux.h>   // Header File For The Glaux Library
 #endif
 
-#include <SDL.h>
+
 */
+//#include <SDL.h>
 //////////////// GAME SPECIFIC DEFINES
 
 #define NUM_MAX_OBJ         300

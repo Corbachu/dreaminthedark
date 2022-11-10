@@ -15,9 +15,14 @@
 
 #include "common.h"
 
+#ifdef DREAMCAST
+#include <zlib.h>
+#if WIN32
 #define _WINDOWS
 //#define ZLIB_DLL
 #include <zlib.h>
+#endif
+#endif
 
 // --------------------------------------------------------------
 // Explode unpacking functions & types

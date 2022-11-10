@@ -19,8 +19,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "SDL.h"
-#include "SDL_thread.h"
+//#include "SDL.h"
+#include "i_sdlinc.h"
+//#include "SDL_thread.h"
 //#include "SDL_sound.h"
 #include "osystem.h"
 
@@ -58,10 +59,10 @@ void osystem_updateImage()
 
     mouseLeft = 0;
     mouseRight = 0;
-}*/
+}
+*/
 
-void osystem_init()  // that's the constructor of the system dependent
-            // object used for the SDL port
+void osystem_init()  // that's the constructor of the system dependent // object used for the SDL port
 {
     unsigned char *keyboard;
     int size;
@@ -80,7 +81,7 @@ void osystem_init()  // that's the constructor of the system dependent
     amask = 0xff000000;
 #endif
 
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
   {
       fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
       exit(1);
@@ -128,11 +129,11 @@ void osystem_init()  // that's the constructor of the system dependent
 
     keyboard[SDLK_RETURN] = 0;
 
-    sdl_screen = SDL_SetVideoMode(640, 400, 32, SDL_SWSURFACE/*|SDL_FULLSCREEN*/);
+    sdl_screen = SDL_SetVideoMode(320, 200, 16, SDL_SWSURFACE|SDL_FULLSCREEN);
 
     if (sdl_screen == NULL)
   {
-      fprintf(stderr, "Couldn't set 640x400x32 video mode: %s\n", SDL_GetError());
+      fprintf(stderr, "Couldn't set 320x200x16 orig 640x400x32 video mode: %s\n", SDL_GetError());
       exit(1);
   }
 

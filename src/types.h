@@ -1,17 +1,15 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <stdint.h>
+//#include <stdint.h>
 #include <stdbool.h>
 
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-
-typedef int8_t s8;
-typedef int16_t s16;
-typedef int32_t s32;
-
+typedef signed char s8;
+typedef short int s16;
+typedef int s32;
+typedef unsigned char u8;
+typedef unsigned short int u16;
+typedef unsigned int u32;
 
 enum gameTypeEnum
 {
@@ -21,5 +19,4 @@ enum gameTypeEnum
   AITD3,
   TIMEGATE,
 };
-
 #endif // TYPES_H

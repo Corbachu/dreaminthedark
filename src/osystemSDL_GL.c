@@ -20,14 +20,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "SDL.h"
-#include "SDL_thread.h"
-#include "SDL_mixer.h"
+#include "system/i_defs_gl.h"
+//#include "glutess/tess.h"
+#include "i_sdlinc.h"
+//#include "SDL.h"
+//#include "SDL_thread.h"
+//#include "SDL_mixer.h"
 #include "osystem.h"
 #include "music.h"
 
-#include <GL/gl.h>      // Header File For The OpenGL32 Library
-#include <GL/glu.h>     // Header File For The GLu32 Library
+
 
 int osystem_mouseRight;
 int osystem_mouseLeft;
@@ -86,11 +88,11 @@ GLuint    modelsDisplayList;
 GLuint    debugFontTexture;
 #endif
 
-GLUtesselator *tobj;
+//GLUtesselator *tobj;
 
-GLdouble tesselateList[100][6];
+//GLdouble tesselateList[100][6];
 
-GLUquadricObj* sphere;
+//GLUquadricObj* sphere;
 
 void osystem_delay(int time)
 {
@@ -167,8 +169,8 @@ void CALLBACK vertexCallback(GLvoid *vertex)
 
 void Sound_Quit(void)
 {
-  Mix_HookMusic(NULL, NULL);
-  Mix_CloseAudio();
+  //Mix_HookMusic(NULL, NULL);
+  //Mix_CloseAudio();
 }
 
 
@@ -237,7 +239,7 @@ void osystem_init()  // that's the constructor of the system dependent
 
     keyboard[SDLK_RETURN] = 0;
 
-    sdl_screen = SDL_SetVideoMode(800, 600, 32, SDL_OPENGL/*|SDL_FULLSCREEN*/);
+    sdl_screen = SDL_SetVideoMode(320, 200, 16, SDL_OPENGL/*|SDL_FULLSCREEN*/);
 
     if (sdl_screen == NULL)
   {
@@ -249,15 +251,15 @@ void osystem_init()  // that's the constructor of the system dependent
     osystem_mouseRight = 0;
 
   glEnable(GL_TEXTURE_2D);
-  //glEnable(GL_CULL_FACE);
+  glEnable(GL_CULL_FACE);
 
   glEnable (GL_BLEND);
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
- // glEnable(GL_DEPTH_TEST);
+  glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LEQUAL);
 
-  glViewport (0, 0, 800, 600);
+  glViewport (0, 0, 320, 200);
 
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);       // Black Background
   glMatrixMode(GL_PROJECTION);            // Select The Projection Matrix
@@ -266,21 +268,21 @@ void osystem_init()  // that's the constructor of the system dependent
   glMatrixMode(GL_MODELVIEW);             // Select The Modelview Matrix
   glLoadIdentity();                 // Reset The Modelview Matrix
 
-  modelsDisplayList = glGenLists(1);
+  //modelsDisplayList = glGenLists(1);
 
   // Create a new tessellation object 
-  tobj = gluNewTess(); 
+  //tobj = gluNewTess(); 
 
   // Set callback functions
-  gluTessCallback(tobj, GLU_TESS_VERTEX, vertexCallback);
-  gluTessCallback(tobj, GLU_TESS_BEGIN, glBegin);
-  gluTessCallback(tobj, GLU_TESS_END, glEnd);
-  gluTessCallback(tobj, GLU_TESS_COMBINE, combineCallback);
+ // gluTessCallback(tobj, GLU_TESS_VERTEX, vertexCallback);
+ // gluTessCallback(tobj, GLU_TESS_BEGIN, glBegin);
+ // gluTessCallback(tobj, GLU_TESS_END, glEnd);
+ // gluTessCallback(tobj, GLU_TESS_COMBINE, combineCallback);
 
-  gluTessCallback(tobj, GLU_TESS_VERTEX, vertexCallback);
-  gluTessCallback(tobj, GLU_TESS_BEGIN, glBegin);
-  gluTessCallback(tobj, GLU_TESS_END, glEnd);
-  gluTessCallback(tobj, GLU_TESS_COMBINE, combineCallback);
+ // gluTessCallback(tobj, GLU_TESS_VERTEX, vertexCallback);
+//  gluTessCallback(tobj, GLU_TESS_BEGIN, glBegin);
+ // gluTessCallback(tobj, GLU_TESS_END, glEnd);
+//  gluTessCallback(tobj, GLU_TESS_COMBINE, combineCallback);
 
   // init debug font
 #if 0
@@ -295,13 +297,13 @@ void osystem_init()  // that's the constructor of the system dependent
 
   // SDL_mixer init
 
-  if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 1, 2048)==-1)
-  {
-    printf("Mix_OpenAudio: %s\n", Mix_GetError());
-    exit(2);
-  }
+ // if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 1, 2048)==-1)
+ // {
+ //   printf("Mix_OpenAudio: %s\n", Mix_GetError());
+ //   exit(2);
+ // }
 
-  Mix_HookMusic(OPL_musicPlayer, NULL);
+  //Mix_HookMusic(OPL_musicPlayer, NULL);
 
   // configure offset mode
   glPolygonOffset(1,2);
@@ -340,12 +342,12 @@ void osystem_init()  // that's the constructor of the system dependent
 
  	
     glEnable(GL_TEXTURE_2D);
-	  glEnable(GL_TEXTURE_1D);
+	//  glEnable(GL_TEXTURE_1D);
   }
 
   // quadrics init
 
-  sphere = gluNewQuadric();
+  //sphere = gluNewQuadric();
 }
 
 void osystem_setPalette(u8 * palette)
@@ -649,9 +651,10 @@ void osystem_crossFade(u8 *buffer, u8 *palette)
 int posInStream = 0;
 volatile bool deviceStatus = false;
 
+#ifdef AUDIO_CALLBACK_CUSTOM
 void my_audio_callback(void *userdata, Uint8 *stream, int len)
 {
-/*  Sound_Sample *sample = (Sound_Sample *)userdata;
+  Sound_Sample *sample = (Sound_Sample *)userdata;
   Uint8* input = (Uint8*)sample->buffer;
 
   if((unsigned int)posInStream+len < sample->buffer_size)
@@ -664,46 +667,47 @@ void my_audio_callback(void *userdata, Uint8 *stream, int len)
     len = sample->buffer_size - posInStream;
     memcpy(stream,input+posInStream,len);
     posInStream+=len;
-  }*/
+  }
 }
+#endif
 
 #ifdef USE_UNPACKED_DATA
 void osystem_playSampleFromName(char* sampleName)
 {
   
-  Mix_Chunk *sample;
+ // Mix_Chunk *sample;
 
-  sample=Mix_LoadWAV_RW(SDL_RWFromFile(sampleName, "rb"), 1);
+ // sample=Mix_LoadWAV_RW(SDL_RWFromFile(sampleName, "rb"), 1);
 
-  if(!sample)
-  {
-#ifdef INTERNAL_DEBUGGER
-    printf("Mix_LoadWAV_RW: %s\n", Mix_GetError());
-#endif
-  }
-  else
-  {
-    Mix_PlayChannel(-1, sample, 0);
-  }
+ // if(!sample)
+ // {
+//#ifdef INTERNAL_DEBUGGER
+   // printf("Mix_LoadWAV_RW: %s\n", Mix_GetError());
+//#endif
+ // }
+ // else
+ // {
+   // Mix_PlayChannel(-1, sample, 0);
+ // }
 }
 #else
 void osystem_playSample(u8* samplePtr,int size)
 {
   
-  Mix_Chunk *sample;
+  //Mix_Chunk *sample;
 
-  sample=Mix_LoadWAV_RW(SDL_RWFromConstMem(samplePtr, size), 1);
+ // sample=Mix_LoadWAV_RW(SDL_RWFromConstMem(samplePtr, size), 1);
 
-  if(!sample)
-  {
-#ifdef INTERNAL_DEBUGGER
-    printf("Mix_LoadWAV_RW: %s\n", Mix_GetError());
-#endif
-  }
-  else
-  {
-    Mix_PlayChannel(-1, sample, 0);
-  }
+  //if(!sample)
+ // {
+//#ifdef INTERNAL_DEBUGGER
+//    printf("Mix_LoadWAV_RW: %s\n", Mix_GetError());
+//#endif
+//  }
+//  else
+//  {
+ //   Mix_PlayChannel(-1, sample, 0);
+ // }
 }
 #endif
 
@@ -711,23 +715,23 @@ int tesselatePosition = 0;
 
 void osystem_startBgPoly()
 {
- // glDisable(GL_DEPTH_TEST);
+  glDisable(GL_DEPTH_TEST);
   glDepthMask(GL_FALSE);
   glBindTexture(GL_TEXTURE_2D, backTexture);
-  //glBegin(GL_POLYGON);
+  glBegin(GL_POLYGON);
 
-  gluTessBeginPolygon(tobj, NULL);
-  gluTessBeginContour(tobj);
+ // gluTessBeginPolygon(tobj, NULL);
+//  gluTessBeginContour(tobj);
 
-  tesselatePosition = 0;
+ // tesselatePosition = 0;
 }
 
 void osystem_endBgPoly()
 {
-  gluTessEndContour(tobj);
-  gluTessEndPolygon(tobj);
+  //gluTessEndContour(tobj);
+  //gluTessEndPolygon(tobj);
 
- // glEnable(GL_DEPTH_TEST);
+  glEnable(GL_DEPTH_TEST);
   glDepthMask(GL_TRUE);
   glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -735,16 +739,6 @@ void osystem_endBgPoly()
 
 void osystem_addBgPolyPoint(int x, int y)
 {
-  tesselateList[tesselatePosition][0] = x;
-  tesselateList[tesselatePosition][1] = y;
-  tesselateList[tesselatePosition][2] = 0;
-  tesselateList[tesselatePosition][3] = 1.f;
-  tesselateList[tesselatePosition][4] = 1.f;
-  tesselateList[tesselatePosition][5] = 1.f;
-
-  gluTessVertex(tobj, tesselateList[tesselatePosition], tesselateList[tesselatePosition]); 
-
-  tesselatePosition++;
 }
 
 
@@ -798,9 +792,9 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color,u8 polyTy
 			glColor4ub(palette[color*3],palette[color*3+1],palette[color*3+2],255);
 			readList = (float*)buffer;
 
-			glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
-			glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
-			glGetIntegerv(GL_VIEWPORT, viewMatrix);
+			//glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
+			//glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
+			//glGetIntegerv(GL_VIEWPORT, viewMatrix);
 
 			glBegin(GL_POLYGON);
 
@@ -848,6 +842,7 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color,u8 polyTy
 			GLdouble projMatrix[16];
 			GLint viewMatrix[4];
 
+  		glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
   		glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
 			glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
 			glGetIntegerv(GL_VIEWPORT, viewMatrix);
@@ -930,9 +925,9 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color,u8 polyTy
 
 			glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 
-			glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
-			glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
-			glGetIntegerv(GL_VIEWPORT, viewMatrix);
+			//glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
+			//glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
+			//glGetIntegerv(GL_VIEWPORT, viewMatrix);
 
 			for(i=0;i<numPoint;i++)
 			{
@@ -1109,7 +1104,8 @@ void osystem_drawSphere(float X, float Y, float Z, u8 color, float size)
 
 	glTranslatef(X,Y,Z);
 
-  gluDisk(sphere,0,(float)size,10,10);
+  //gluDisk(sphere,0,(float)size,10,10);
+  //gluDisk(sphere,0,(float)size,10,10);
 
 	glPopMatrix();
 }

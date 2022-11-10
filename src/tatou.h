@@ -14,8 +14,11 @@ void process_events( void );
 void copyPalette(u8* source, u8* dest);
 void copyToScreen(u8* source, u8* dest);
 void makeRotationMtx(unsigned int x, unsigned int y, unsigned int z, int* xOut, int* yOut);
-void make3dTatouUnk1(int var1,int var2);
-void fadeOut(int var1, int var2);
+// ~CA:
+//fix conflicting types (int/s32)
+void make3dTatouUnk1(s32 var1,s32 var2);
+void fadeOut(s32 var1, s32 var2);
+//endfix
 void playSound(int num);
 void rotateModel(int x,int y,int z,int alpha,int beta,int gamma,int time);
 //////////////

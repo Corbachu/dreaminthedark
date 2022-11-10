@@ -1,7 +1,7 @@
 #include "common.h"
 
-#include "SDL.h"
-#include "SDL_thread.h"
+#include "i_sdlinc.h"
+//#include "SDL.h"
 
 int musicThread(void *dummy);
 

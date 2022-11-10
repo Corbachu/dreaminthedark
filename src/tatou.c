@@ -12,7 +12,8 @@
 #include "renderer.h"
 
 #ifdef PCLIKE
-#include "SDL.h"
+#include "i_sdlinc.h"
+//#include "SDL.h"
 #endif
 
 
@@ -179,6 +180,7 @@ void computeProportionalPalette(unsigned char* inPalette, unsigned char* outPale
     *(outPalette++) = ((*(inPalette++))*coef)>> 8;
   }
 }
+
 
 void make3dTatouUnk1(s32 var1,s32 var2)
 {

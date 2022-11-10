@@ -190,30 +190,30 @@ float renderPointList[6400];
 short int renderPointList[6400];
 #endif
 
-int numActorInList;
-int sortedActorTable[NUM_MAX_ACTOR];
+s32 numActorInList;
+s32 sortedActorTable[NUM_MAX_ACTOR];
 
-int angleCompX;
-int angleCompZ;
-int angleCompBeta;
+s32 angleCompX;
+s32 angleCompZ;
+s32 angleCompBeta;
 
-int bufferAnimCounter = 0;
+s32 bufferAnimCounter = 0;
 
-int animCurrentTime;
-int animKeyframeLength;
-int animMoveX;
-int animMoveY;
-int animMoveZ;
-int animRot1;
-int animRot2;
-int animRot3;
+s32 animCurrentTime;
+s32 animKeyframeLength;
+s32 animMoveX;
+s32 animMoveY;
+s32 animMoveZ;
+s32 animRot1;
+s32 animRot2;
+s32 animRot3;
 u8* animVar1;
 u8* animVar3;
 u8* animVar4;
 
 short int newFloor;
 
-int paletteVar;
+s32 paletteVar;
 
 u8 cameraBuffer[256];
 u8 cameraBuffer2[256];
@@ -224,10 +224,10 @@ u8* cameraBufferPtr = cameraBuffer;
 u8* cameraBuffer2Ptr = cameraBuffer2;
 u8* cameraBuffer3Ptr = cameraBuffer3;
 
-int overlaySize1;
-int overlaySize2;
+s32 overlaySize1;
+s32 overlaySize2;
 
-int bgOverlayVar1;
+s32 bgOverlayVar1;
 
 short int newRoom;
 
@@ -235,7 +235,7 @@ short int inventory[INVENTORY_SIZE];
 
 short int shakeVar1;
 short int shakingAmplitude;
-unsigned int timerFreeze1;
+u32 timerFreeze1;
 
 hardColStruct* hardColTable[10];
 
@@ -256,14 +256,14 @@ char* listAnimSelect[] = {
 
 saveEntry saveTable[40];
 
-int hqrVar1 = 0;
-int mainVar3 = 4000;
-int mainVar2 = -2000;
+s32 hqrVar1 = 0;
+s32 mainVar3 = 4000;
+s32 mainVar2 = -2000;
 
-int clipLeft = 0;
-int clipTop = 0;
-int clipRight = 319;
-int clipBottom = 119;
+s32 clipLeft = 0;
+s32 clipTop = 0;
+s32 clipRight = 319;
+s32 clipBottom = 119;
 
 hqrEntryStruct* listMus;
 hqrEntryStruct* listSamp;

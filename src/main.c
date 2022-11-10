@@ -6,6 +6,10 @@
 
 // seg002
 
+//#include <kos.h>
+//KOS_INIT_FLAGS(INIT_DEFAULT | INIT_THD_PREEMPT);
+
+
 #include "main.h"
 #include "anim.h"
 #include "font.h"
@@ -33,6 +37,15 @@
 u8 scaledScreen[640*400];
 
 int input5;
+
+#ifdef GDB_DEBUG
+extern void gdb_init(void);
+#endif
+
+#ifdef DREAMCAST
+static int		dcargc;
+static char*	dcargv[64];
+#endif
 
 enumCVars AITD1KnownCVars[]=
 {
@@ -5362,6 +5375,7 @@ void detectGame(void)
 
 int main(int argc, char** argv)
 {
+	printf("DREAM IN THE DARK MAIN INIT\n");
 #ifdef INTERNAL_DEBUGGER
     printf("INTERNAL_DEBUGGER on.\n");
 #endif
@@ -5378,7 +5392,9 @@ int main(int argc, char** argv)
   printf("%s",version);//to avoid errors if version has a "%"
 
   osystem_init();
-  osystem_initBuffer(scaledScreen,640,400);
+  
+  osystem_initBuffer(scaledScreen,320,200);
+  
   startThreadTimer();
 
   detectGame();
