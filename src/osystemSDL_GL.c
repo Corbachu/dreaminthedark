@@ -20,7 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "system/i_defs_gl.h"
+
+#include "glutess/tess.h"
 //#include "glutess/tess.h"
 #include "i_sdlinc.h"
 //#include "SDL.h"
@@ -29,6 +30,23 @@
 #include "osystem.h"
 #include "music.h"
 
+#include "system/i_defs_gl.h"
+
+//
+void checkGL()
+{
+#ifdef DEBUG
+    volatile GLenum error = glGetError();
+
+    //while (error != GL_NO_ERROR)
+    {
+        //assert(0);
+    }
+#endif
+}
+
+int g_screenWidth = 0;
+int g_screenHeight = 0;
 
 
 int osystem_mouseRight;
@@ -88,11 +106,11 @@ GLuint    modelsDisplayList;
 GLuint    debugFontTexture;
 #endif
 
-//GLUtesselator *tobj;
+GLUtesselator *tobj;
 
-//GLdouble tesselateList[100][6];
+GLdouble tesselateList[100][6];
 
-//GLUquadricObj* sphere;
+GLUquadricObj* sphere;
 
 void osystem_delay(int time)
 {
@@ -181,6 +199,8 @@ void osystem_init()  // that's the constructor of the system dependent
     int size;
 
     Uint32 rmask, gmask, bmask, amask;
+	
+
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     rmask = 0xff000000;
@@ -194,40 +214,41 @@ void osystem_init()  // that's the constructor of the system dependent
     amask = 0xff000000;
 #endif
 
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-  {
-      fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
-      exit(1);
-  }
+ //   if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+ // {
+  //    fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
+  //    exit(1);
+  //}
+ 
+if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0)
+		fprintf(stderr, "Couldn't initialize SDL: %s\n", SDL_GetError());
+
+	//M_CheckBooleanParm("warpmouse", &use_warp_mouse, false);
+	//M_CheckBooleanParm("grab", &use_grab, false);
+
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE,     5);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,   5);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,    5);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,   16);
+	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
+
+  
+ #ifdef DREAMCAST
+	SDL_JoystickEventState (SDL_ENABLE);
+	SDL_JoystickOpen (0);
+	{ 
+		SDL_Event event;
+		while (SDL_PollEvent (&event))
+			SDL_Delay(10);
+	}
+	glEnable(GL_NEARZ_CLIPPING_KOS);
+#endif
 
   //atexit(Sound_Quit);
   //  atexit(SDL_Quit);
 
-/*    if (TTF_Init() < 0)
-  {
-      fprintf(stderr, "Couldn't initialize TTF: %s\n", SDL_GetError());
-      exit(1);
-  }
-    atexit(TTF_Quit);
-
-    int rendersolid = 0;
-    int renderstyle = 0;
-    int rendertype = 0;
-
-    int ptsize = 11;
-
-    font = TTF_OpenFont("verdana.ttf", ptsize);
-
-    if (font == NULL)
-  {
-      fprintf(stderr, "Couldn't load %d pt font from %s: %s\n", ptsize, "verdana.ttf",
-        SDL_GetError());
-      exit(2);
-  }
-
-    TTF_SetFontStyle(font, renderstyle);*/
-
-    SDL_WM_SetCaption("Alone in the dark \"GL\"", "AITD");
+    //SDL_WM_SetCaption("Alone in the dark \"GL\"", "AITD");
 
    // SDL_ShowCursor (SDL_DISABLE);
 
@@ -251,12 +272,12 @@ void osystem_init()  // that's the constructor of the system dependent
     osystem_mouseRight = 0;
 
   glEnable(GL_TEXTURE_2D);
-  glEnable(GL_CULL_FACE);
+ // glEnable(GL_CULL_FACE);
 
   glEnable (GL_BLEND);
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  glEnable(GL_DEPTH_TEST);
+  //glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LEQUAL);
 
   glViewport (0, 0, 320, 200);
@@ -271,18 +292,47 @@ void osystem_init()  // that's the constructor of the system dependent
   //modelsDisplayList = glGenLists(1);
 
   // Create a new tessellation object 
-  //tobj = gluNewTess(); 
+  tobj = gluNewTess(); 
 
+/*   // src/glutess/glutess.h:370:23: note: expected '_GLUfuncptr' but argument is of type 'void (*)(void *)'
+    //  src/osystemSDL_GL.c:298:3: warning: passing argument 3 of 'gluTessCallback' from incompatible pointer type [enabled by default]
+	//  ~CA: gluTessCallback is not being called properly ... 
+	//   need to just completely kill 'glutess' and this whole SDL crap anyways. 
+	//  Renderer rewrite using DreamEDGE backends, maybe...
+	
+  src/osystemSDL_GL.c:298:3: warning: passing argument 3 of 'gluTessCallback' from incompatible pointer type [enabled by default]
+In file included from src/glutess/tess.h:38:0,
+                 from src/osystemSDL_GL.c:24:
+src/osystemSDL_GL.c:299:3: warning: passing argument 3 of 'gluTessCallback' from incompatible pointer type [enabled by default]
+In file included from src/glutess/tess.h:38:0,
+                 from src/osystemSDL_GL.c:24:
+src/glutess/glutess.h:370:23: note: expected '_GLUfuncptr' but argument is of type 'void (*)(unsigned int)'
+src/osystemSDL_GL.c:301:3: warning: passing argument 3 of 'gluTessCallback' from incompatible pointer type [enabled by default]
+In file included from src/glutess/tess.h:38:0,
+                 from src/osystemSDL_GL.c:24:
+src/glutess/glutess.h:370:23: note: expected '_GLUfuncptr' but argument is of type 'void (*)(float *, float **, float *, float **)'
+src/osystemSDL_GL.c:303:3: warning: passing argument 3 of 'gluTessCallback' from incompatible pointer type [enabled by default]
+In file included from src/glutess/tess.h:38:0,
+                 from src/osystemSDL_GL.c:24:
+src/glutess/glutess.h:370:23: note: expected '_GLUfuncptr' but argument is of type 'void (*)(void *)'
+src/osystemSDL_GL.c:304:3: warning: passing argument 3 of 'gluTessCallback' from incompatible pointer type [enabled by default]
+In file included from src/glutess/tess.h:38:0,
+                 from src/osystemSDL_GL.c:24:
+src/glutess/glutess.h:370:23: note: expected '_GLUfuncptr' but argument is of type 'void (*)(unsigned int)'
+src/osystemSDL_GL.c:306:3: warning: passing argument 3 of 'gluTessCallback' from incompatible pointer type [enabled by default]
+In file included from src/glutess/tess.h:38:0,
+                 from src/osystemSDL_GL.c:24:
+src/glutess/glutess.h:370:23: note: expected '_GLUfuncptr' but argument is of type 'void (*)(float *, float **, float *, float **)' */
   // Set callback functions
- // gluTessCallback(tobj, GLU_TESS_VERTEX, vertexCallback);
- // gluTessCallback(tobj, GLU_TESS_BEGIN, glBegin);
- // gluTessCallback(tobj, GLU_TESS_END, glEnd);
- // gluTessCallback(tobj, GLU_TESS_COMBINE, combineCallback);
+  gluTessCallback(tobj, GLU_TESS_VERTEX, vertexCallback);
+  gluTessCallback(tobj, GLU_TESS_BEGIN, glBegin);
+  gluTessCallback(tobj, GLU_TESS_END, glEnd);
+  gluTessCallback(tobj, GLU_TESS_COMBINE, combineCallback);
 
- // gluTessCallback(tobj, GLU_TESS_VERTEX, vertexCallback);
-//  gluTessCallback(tobj, GLU_TESS_BEGIN, glBegin);
- // gluTessCallback(tobj, GLU_TESS_END, glEnd);
-//  gluTessCallback(tobj, GLU_TESS_COMBINE, combineCallback);
+  gluTessCallback(tobj, GLU_TESS_VERTEX, vertexCallback);
+  gluTessCallback(tobj, GLU_TESS_BEGIN, glBegin);
+  gluTessCallback(tobj, GLU_TESS_END, glEnd);
+  gluTessCallback(tobj, GLU_TESS_COMBINE, combineCallback);
 
   // init debug font
 #if 0
@@ -347,9 +397,87 @@ void osystem_init()  // that's the constructor of the system dependent
 
   // quadrics init
 
-  //sphere = gluNewQuadric();
+    //sphere = gluNewQuadric();
 }
 
+/* void osystem_initGL(int screenWidth, int screenHeight)
+{
+#if 0
+
+    g_screenWidth = screenWidth;
+    g_screenHeight = screenHeight;
+
+    //glEnable(GL_TEXTURE_2D);
+    //glEnable(GL_CULL_FACE);
+
+    checkGL();
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    checkGL();
+
+    // glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LESS);
+
+    glViewport(0, 0, g_screenWidth, g_screenHeight);
+    checkGL();
+
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);       // Black Background
+    checkGL();
+
+    // generate textures
+    {
+        int i;
+        int j;
+
+        unsigned char ditherMap[256 * 256 * 4];
+
+        unsigned char* tempPtr = ditherMap;
+
+        for (i = 0; i < 256; i++)
+        {
+            for (j = 0; j < 256; j++)
+            {
+                unsigned char ditherValue = rand() % 0x50;
+
+                *(tempPtr++) = ditherValue;
+                *(tempPtr++) = ditherValue;
+                *(tempPtr++) = ditherValue;
+                *(tempPtr++) = 255;
+            }
+        }
+
+        //glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+
+        glGenTextures(1, &ditherTexture);
+        glBindTexture(GL_TEXTURE_2D, ditherTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, ditherMap);
+        checkGL();
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        checkGL();
+
+        //glEnable(GL_TEXTURE_2D);
+        //checkGL();
+    }
+
+    checkGL();
+
+   // RGL_Init (initbuffer)();
+
+    checkGL();
+
+    GLuint vao;
+
+    glGenVertexArrays(1, &vao); checkGL();
+    glBindVertexArray(vao); checkGL();
+#endif
+}
+ */
 void osystem_setPalette(u8 * palette)
 {
 
@@ -715,23 +843,23 @@ int tesselatePosition = 0;
 
 void osystem_startBgPoly()
 {
-  glDisable(GL_DEPTH_TEST);
+ // glDisable(GL_DEPTH_TEST);
   glDepthMask(GL_FALSE);
   glBindTexture(GL_TEXTURE_2D, backTexture);
-  glBegin(GL_POLYGON);
+  //glBegin(GL_POLYGON);
 
- // gluTessBeginPolygon(tobj, NULL);
-//  gluTessBeginContour(tobj);
+  gluTessBeginPolygon(tobj, NULL);
+  gluTessBeginContour(tobj);
 
- // tesselatePosition = 0;
+  tesselatePosition = 0;
 }
 
 void osystem_endBgPoly()
 {
-  //gluTessEndContour(tobj);
-  //gluTessEndPolygon(tobj);
+  gluTessEndContour(tobj);
+  gluTessEndPolygon(tobj);
 
-  glEnable(GL_DEPTH_TEST);
+ // glEnable(GL_DEPTH_TEST);
   glDepthMask(GL_TRUE);
   glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -739,6 +867,16 @@ void osystem_endBgPoly()
 
 void osystem_addBgPolyPoint(int x, int y)
 {
+  tesselateList[tesselatePosition][0] = x;
+  tesselateList[tesselatePosition][1] = y;
+  tesselateList[tesselatePosition][2] = 0;
+  tesselateList[tesselatePosition][3] = 1.f;
+  tesselateList[tesselatePosition][4] = 1.f;
+  tesselateList[tesselatePosition][5] = 1.f;
+
+  gluTessVertex(tobj, tesselateList[tesselatePosition], tesselateList[tesselatePosition]); 
+
+  tesselatePosition++;
 }
 
 
@@ -842,7 +980,6 @@ void osystem_fillPoly(float* buffer, int numPoint, unsigned char color,u8 polyTy
 			GLdouble projMatrix[16];
 			GLint viewMatrix[4];
 
-  		glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
   		glGetDoublev(GL_MODELVIEW_MATRIX, modelMatrix);
 			glGetDoublev(GL_PROJECTION_MATRIX, projMatrix);
 			glGetIntegerv(GL_VIEWPORT, viewMatrix);
@@ -1104,8 +1241,8 @@ void osystem_drawSphere(float X, float Y, float Z, u8 color, float size)
 
 	glTranslatef(X,Y,Z);
 
-  //gluDisk(sphere,0,(float)size,10,10);
-  //gluDisk(sphere,0,(float)size,10,10);
+    //gluDisk(sphere,0,size,10,10);
+	//gluDisk(sphere, 0.5f, 1.5f, 32, 32);
 
 	glPopMatrix();
 }
