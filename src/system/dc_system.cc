@@ -16,8 +16,8 @@
 //
 //----------------------------------------------------------------------------
 
-#include <kos.h>
-KOS_INIT_FLAGS(INIT_DEFAULT | INIT_THD_PREEMPT);
+//#include <kos.h>
+//KOS_INIT_FLAGS(INIT_DEFAULT | INIT_THD_PREEMPT);
 
 #include "i_defs.h"
 //#include "i_sdlinc.h"
@@ -32,21 +32,21 @@ KOS_INIT_FLAGS(INIT_DEFAULT | INIT_THD_PREEMPT);
 
 #include "../../epi/timestamp.h"
 
-#include "../version.h"
-#include "../con_main.h"
-#include "../dm_state.h"
-#include "../e_main.h"
-#include "../g_game.h"
-#include "../m_argv.h"
-#include "../m_misc.h"
-#include "../m_random.h"
-#include "../r_modes.h"
-#include "../w_wad.h"
-#include "../z_zone.h"
+//#include "../version.h"
+//#include "../con_main.h"
+//#include "../dm_state.h"
+//#include "../e_main.h"
+//#include "../g_game.h"
+//#include "../m_argv.h"
+//#include "../m_misc.h"
+//#include "../m_random.h"
+//#include "../r_modes.h"
+//#include "../w_wad.h"
+//#include "../z_zone.h"
 
 #include "dc_sysinc.h"
 
-#include <zlib/zlib.h>
+#include <zlib.h>
 
 #include <kos/opts.h>
 #include <kos/fs_ramdisk.h>
@@ -260,19 +260,19 @@ void I_Error(const char *error, ...)
 
 	// -AJA- Commit suicide, thereby producing a core dump which may
 	//       come in handy for debugging the code that called I_Error().
-	if (M_CheckParm("-core"))
-	{
-		fprintf(stderr, "%s\n", errmsg);
+	//if (M_CheckParm("-core"))
+	//{
+	//	fprintf(stderr, "%s\n", errmsg);
 
-		I_GrabCursor(false);
+	//	I_GrabCursor(false);
 
-		raise(11);
+	//	raise(11);
 		/* NOTREACHED */
-	}
+	//}
 
 	I_SystemShutdown();
 
-	I_MessageBox(errmsg, "EDGE2 Error");
+	//I_MessageBox(errmsg, "EDGE2 Error");
 
 	I_CloseProgram(-1);
 }
@@ -341,7 +341,7 @@ void I_Printf(const char *message,...)
 	}
 
 	// Send the message to the console.
-	CON_Printf("%s", printbuf);
+	// CON_Printf("%s", printbuf);
 
 	// And the text screen if in text mode
 #ifndef USE_FLTK
@@ -407,16 +407,16 @@ void I_SystemStartup(void)
 	//if (SDL_Init(flags) < 0)
 	//	I_Error("Couldn't init SDL!!\n%s\n", SDL_GetError());
 
-	I_StartupGraphics();
-	I_StartupControl();
+	//I_StartupGraphics();
+	//I_StartupControl();
 #ifndef NO_SOUND
-	I_StartupSound();    // -ACB- 1999/09/20 Sets nosound directly
+	//I_StartupSound();    // -ACB- 1999/09/20 Sets nosound directly
 #endif
 #ifndef NO_MUSIC
-	I_StartupMusic();
+	//I_StartupMusic();
 #endif
 #ifndef NO_NETWORK
-	I_StartupNetwork();
+	//I_StartupNetwork();
 #endif
 }
 
@@ -429,16 +429,16 @@ void I_SystemShutdown(void)
 {
 	// makre sure audio is unlocked (e.g. I_Error occurred)
 #ifndef NO_SOUND
-	I_UnlockAudio();
+	//I_UnlockAudio();
 #endif
 #ifndef NO_NETWORK
 	I_ShutdownNetwork();
 #endif
 #ifndef NO_MUSIC
-	I_ShutdownMusic();
+	//I_ShutdownMusic();
 #endif
 #ifndef NO_SOUND
-	I_ShutdownSound();
+	//I_ShutdownSound();
 #endif
 	I_ShutdownControl();
 	I_ShutdownGraphics();
@@ -488,15 +488,15 @@ void I_Sleep(int millisecs)
 	usleep(millisecs * 1000);
 }
 
-extern void DC_Tactile (int freq, int intensity, int select);
+//extern void DC_Tactile (int freq, int intensity, int select);
 
 //
 // Force Feedback
 //
-void I_Tactile (int freq, int intensity, int select)
-{
-	DC_Tactile(freq, intensity, select);
-}
+//void I_Tactile (int freq, int intensity, int select)
+//{
+//	/DC_Tactile(freq, intensity, select);
+//}
 
 #ifndef MACOSX // Defined separately under Mac OS X. -ACB- 2010/12/20
 //
@@ -673,7 +673,7 @@ unsigned char pentagram_icon[544] = {
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xed, 0xdd, 0xdd, 0xee, 0xef, 0xff, 0xff, 0xff, 0xff, 0xff,
 };
 
-int DC_LoadFromVMU(char *dst)
+/* int DC_LoadFromVMU(char *dst)
 {
     char src[32];
     char dest[28];
@@ -748,7 +748,7 @@ int DC_SaveToVMU(char *src, int ftype)
     compress(zipdata, &zipsize, data, filesize);
 
     // fill in VMU header
-    strcpy(pkg.desc_short, "Dream3DGE");
+    strcpy(pkg.desc_short, "DREAMDARK");
     switch(ftype)
     {
 		case 0:
@@ -777,7 +777,7 @@ int DC_SaveToVMU(char *src, int ftype)
 			break;
     }
 
-    strcpy(pkg.app_id, "Dream3DGE");
+    strcpy(pkg.app_id, "DREAMDARK");
     pkg.icon_cnt = 1;
     pkg.icon_anim_speed = 0;
     memcpy(&pkg.icon_pal[0], icon_data, 32);
@@ -800,7 +800,7 @@ int DC_SaveToVMU(char *src, int ftype)
     free(zipdata);
 
     return 0;
-}
+} */
 
 
 //--- editor settings ---
