@@ -1,41 +1,41 @@
-#include "glu.h"
+#include "glutess.h"
 #include "tess.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 /******************************************************************************/
 
-typedef struct Triangle {
+struct Triangle_s {
     int v[3];
-    struct Triangle *prev;
-} Triangle;
+    struct Triangle_s *prev;
+};
 
-typedef struct Vertex {
+struct Vertex_s {
     double pt[3];
     int index;
-    struct Vertex *prev;
-} Vertex;
+    struct Vertex_s *prev;
+};
 
-typedef struct TessContext {
-    Triangle *latest_t;
+struct TessContext_s {
+    struct Triangle_s *latest_t;
     int n_tris;
     
-    Vertex *v_prev;
-    Vertex *v_prevprev;
-    Vertex *latest_v;
+    struct Vertex_s *v_prev;
+    struct Vertex_s *v_prevprev;
+    struct Vertex_s *latest_v;
     GLenum current_mode;
     int odd_even_strip;
 
-    void (*vertex_cb)(Vertex *, struct TessContext *);
-} TessContext;
+    void (*vertex_cb)(struct Vertex_s *, struct TessContext_s *);
+};
 
-void skip_vertex(Vertex *v, TessContext *ctx);
+void skip_vertex(struct Vertex_s *v, struct TessContext_s *ctx);
 
 /******************************************************************************/
 
-TessContext *new_tess_context()
+struct TessContext_s *new_tess_context()
 {
-    TessContext *result = (TessContext *)malloc(sizeof (struct TessContext));
+    struct TessContext_s *result = (struct TessContext_s *)malloc(sizeof (struct TessContext_s));
     result->latest_t = NULL;
     result->latest_v = NULL;
     result->n_tris = 0;
@@ -48,14 +48,15 @@ TessContext *new_tess_context()
     return result;
 }
 
-void destroy_tess_context(TessContext *ctx)
+
+void destroy_tess_context(struct TessContext_s *ctx)
 {
     free(ctx);
 }
 
-Vertex *new_vertex(TessContext *ctx, double x, double y)
+struct Vertex_s *new_vertex(struct TessContext_s *ctx, double x, double y)
 {
-    Vertex *result = (Vertex *)malloc(sizeof(Vertex));
+    struct Vertex_s *result = (struct Vertex_s *)malloc(sizeof(struct Vertex_s));
     result->prev = ctx->latest_v;
     result->pt[0] = x;
     result->pt[1] = y;
@@ -70,9 +71,9 @@ Vertex *new_vertex(TessContext *ctx, double x, double y)
 }
 
 
-Triangle *new_triangle(TessContext *ctx, int v1, int v2, int v3)
+struct Triangle_s *new_triangle(struct TessContext_s *ctx, int v1, int v2, int v3)
 {
-    Triangle *result = (Triangle *)malloc(sizeof(Triangle));
+    struct Triangle_s *result = (struct Triangle_s *)malloc(sizeof(struct Triangle_s));
     result->prev = ctx->latest_t;
     result->v[0] = v1;
     result->v[1] = v2;
@@ -83,9 +84,9 @@ Triangle *new_triangle(TessContext *ctx, int v1, int v2, int v3)
 
 /******************************************************************************/
 
-void skip_vertex(Vertex *v, TessContext *ctx) {};
+void skip_vertex(struct Vertex_s *v, struct TessContext_s *ctx) {};
 
-void fan_vertex(Vertex *v, TessContext *ctx) {
+void fan_vertex(struct Vertex_s *v, struct TessContext_s *ctx) {
     if (ctx->v_prevprev == NULL) {
         ctx->v_prevprev = v;
         return;
@@ -98,7 +99,7 @@ void fan_vertex(Vertex *v, TessContext *ctx) {
     ctx->v_prev = v;
 }
 
-void strip_vertex(Vertex *v, TessContext *ctx)
+void strip_vertex(struct Vertex_s *v, struct TessContext_s *ctx)
 {
     if (ctx->v_prev == NULL) {
         ctx->v_prev = v;
@@ -119,7 +120,7 @@ void strip_vertex(Vertex *v, TessContext *ctx)
     ctx->v_prevprev = v;
 }
 
-void triangle_vertex(Vertex *v, TessContext *ctx) {
+void triangle_vertex(struct Vertex_s *v, struct TessContext_s *ctx) {
     if (ctx->v_prevprev == NULL) {
         ctx->v_prevprev = v;
         return;
@@ -134,14 +135,14 @@ void triangle_vertex(Vertex *v, TessContext *ctx) {
 
 void vertex(void *vertex_data, void *poly_data)
 {
-    Vertex *ptr = (Vertex *)vertex_data;
-    TessContext *ctx = (TessContext *)poly_data;
+    struct Vertex_s *ptr = (struct Vertex_s *)vertex_data;
+    struct TessContext_s *ctx = (struct TessContext_s *)poly_data;
     ctx->vertex_cb(ptr, ctx);
 }
 
 void begin(GLenum which, void *poly_data)
 {
-    TessContext *ctx = (TessContext *)poly_data;
+    struct TessContext_s *ctx = (struct TessContext_s *)poly_data;
     ctx->v_prev = ctx->v_prevprev = NULL;
     ctx->odd_even_strip = 0;
     switch (which) {
@@ -155,19 +156,24 @@ void begin(GLenum which, void *poly_data)
 }
 
 void combine(const GLdouble newVertex[3],
-             const void *neighborVertex[4],
+             const void *neighborVertex_s[4],
              const GLfloat neighborWeight[4], void **outData, void *polyData)
 {
-    TessContext *ctx = (TessContext *)polyData;
-    Vertex *result = new_vertex(ctx, newVertex[0], newVertex[1]);
+    struct TessContext_s *ctx = (struct TessContext_s *)polyData;
+    struct Vertex_s *result = new_vertex(ctx, newVertex[0], newVertex[1]);
     *outData = result;
 }
 
-void write_output(TessContext *ctx, double **coordinates_out, int **tris_out, int *vc, int *tc)
+
+void write_output(struct TessContext_s *ctx, double **coordinates_out, int **tris_out, int *vc, int *tc)
 {
+    struct Vertex_s *prev_v;
+    struct Triangle_s *prev_t;
     int n_verts = 1 + ctx->latest_v->index;
-    *vc = n_verts;
     int n_tris_copy = ctx->n_tris;
+
+    *vc = n_verts; 
+
     *tc = ctx->n_tris;
     *coordinates_out = malloc(n_verts * sizeof(double) * 2);
     *tris_out = (ctx->n_tris ? malloc(ctx->n_tris * sizeof(int) * 3) : NULL);
@@ -175,21 +181,22 @@ void write_output(TessContext *ctx, double **coordinates_out, int **tris_out, in
     while (ctx->latest_v) {
         (*coordinates_out)[2*ctx->latest_v->index]   = ctx->latest_v->pt[0];
         (*coordinates_out)[2*ctx->latest_v->index+1] = ctx->latest_v->pt[1];
-        Vertex *prev = ctx->latest_v->prev;
+        prev_v = ctx->latest_v->prev;
         free(ctx->latest_v);
-        ctx->latest_v = prev;
+        ctx->latest_v = prev_v;
     }
 
     while (ctx->latest_t) {
         (*tris_out)[3*(n_tris_copy-1)]   = ctx->latest_t->v[0];
         (*tris_out)[3*(n_tris_copy-1)+1] = ctx->latest_t->v[1];
         (*tris_out)[3*(n_tris_copy-1)+2] = ctx->latest_t->v[2];
-        Triangle *prev = ctx->latest_t->prev;
+        prev_t = ctx->latest_t->prev;
         free(ctx->latest_t);
-        ctx->latest_t = prev;
+        ctx->latest_t = prev_t;
         n_tris_copy--;
     }
 }
+
 
 void tessellate
     (double **verts,
@@ -200,9 +207,9 @@ void tessellate
      const double **contoursend)
 {
     const double *contourbegin, *contourend;
-    Vertex *current_vertex;
+    struct Vertex_s *current_vertex;
     GLUtesselator *tess;
-    TessContext *ctx;
+    struct TessContext_s *ctx;
 
     tess = gluNewTess();
     ctx = new_tess_context();

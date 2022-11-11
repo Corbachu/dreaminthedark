@@ -28,8 +28,67 @@
  * Silicon Graphics, Inc.
  */
 
+/* ftg.mlabbe -- I renamed this file from glu.h to glutess.h in order to
+   avoid any future situations where a compile environment puts another glu.h
+   in the search path ahead of this file.
+
+   It is also worth noting that this is a rough rip of the glu tesselation
+   functionality, and as such, not all of the things declared below actually
+   exist.  It is possible to get link errors, so check if a function exists
+   before counting on your grand designs.
+   */
+
 #ifndef __glu_h__
 #define __glu_h__
+
+#ifdef DREAMCAST
+#include "GLdc/include/GL/gl.h"
+#include "GLdc/include/GL/glu.h"
+#include "GLdc/include/GL/glext.h"
+#include "GLdc/include/GL/glkos.h"
+#include <dc/vec3f.h>
+#include <dc/matrix.h> 
+#include <dc/pvr.h>
+#endif
+
+#define GLAPIENTRYP *
+#undef GLAPIENTRY
+#define GLAPIENTRY
+
+#ifndef DREAMCAST 
+typedef int GLint;
+typedef unsigned int GLenum;
+// redefined to match glew.h's -ml
+typedef int GLsizei;
+//typedef unsigned int GLsizei;
+typedef float GLfloat;
+typedef double GLdouble;
+typedef unsigned char GLubyte;
+// redefined to match glew.h's
+typedef unsigned char GLboolean;
+//typedef int GLboolean;
+typedef void GLvoid;
+#endif
+
+#define GL_FALSE 0
+#define GL_TRUE 1
+#define GL_LINE_LOOP                      0x0002
+#define GL_LINE_STRIP                     0x0003
+#define GL_TRIANGLES                      0x0004
+#define GL_TRIANGLE_STRIP                 0x0005
+#define GL_TRIANGLE_FAN                   0x0006
+
+// #if (defined(_MSC_VER) || defined(__MINGW32__)) && defined(BUILD_GLU32)
+// # undef GLAPI
+// # define GLAPI __declspec(dllexport)
+// #elif (defined(_MSC_VER) || defined(__MINGW32__)) && defined(_DLL)
+// /* tag specifying we're building for DLL runtime support */
+// # undef GLAPI
+// # define GLAPI __declspec(dllimport)
+// #elif !defined(GLAPI)
+// /* for use with static link lib build of Win32 edition only */
+// # define GLAPI extern
+// #endif /* _STATIC_MESA support */
 
 #ifdef __cplusplus
 extern "C" {
@@ -283,6 +342,7 @@ GLAPI void GLAPIENTRY gluGetTessProperty (GLUtesselator* tess, GLenum which, GLd
 GLAPI void GLAPIENTRY gluLoadSamplingMatrices (GLUnurbs* nurb, const GLfloat *model, const GLfloat *perspective, const GLint *view);
 GLAPI void GLAPIENTRY gluLookAt (GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ, GLdouble centerX, GLdouble centerY, GLdouble centerZ, GLdouble upX, GLdouble upY, GLdouble upZ);
 GLAPI GLUnurbs* GLAPIENTRY gluNewNurbsRenderer (void);
+// ~CA: FIXME (_gluNewQuadric)
 GLAPI GLUquadric* GLAPIENTRY gluNewQuadric (void);
 GLAPI GLUtesselator* GLAPIENTRY gluNewTess (void);
 GLAPI void GLAPIENTRY gluNextContour (GLUtesselator* tess, GLenum type);
