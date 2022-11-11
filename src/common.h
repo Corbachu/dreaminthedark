@@ -5,7 +5,7 @@
 
 //#include "sysconfig.h"
 
-#define NAME "FITD"
+#define NAME "dreaminthedark"
 
 #define VERSION "0.101"
 
@@ -175,7 +175,7 @@ int getCVarsIdx(enumCVars);
 
 ////
 
-//typedef unsigned char byte;
+typedef unsigned char byte;
 
 #ifdef UNIX
 #define FORCEINLINE static inline
@@ -183,7 +183,7 @@ int getCVarsIdx(enumCVars);
 #ifdef WIN32
 #define FORCEINLINE __forceinline
 #else
-#define FORCEINLINE inline
+#define FORCEINLINE static inline
 #endif
 #endif
 
