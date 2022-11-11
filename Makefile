@@ -102,7 +102,6 @@ KOS_CFLAGS+= -I$(KOS_BASE)/addons/GLdc/include/
 KOS_CFLAGS+= -I$(KOS_BASE)/../kos-ports/include/SDL
 KOS_CFLAGS+= -I$(KOS_BASE)/../kos-ports/include/zlib
 KOS_CFLAGS+= -I$(KOS_BASE)/addons/include/
-
 ################################################################################
 ## EDGE Flags
 ##
@@ -199,6 +198,7 @@ LDFLAGS += -lSDL
 #LDFLAGS += -lGL
 LDFLAGS += -lGLdc
 #LDFLAGS += libgl/libGLdc.a
+LDFLAGS += src/glutess/lib/libgltess.a
 
 # PNG, JPEG, ZLIB, and KMG (for Dreamcast KMG textures)
 
@@ -242,12 +242,11 @@ clean:
 #	rm -f libgl/libGLdc.a libgl/GL/*.o
 
 halfclean:
-	rm -f $(PROGRAM) $(OBJDIR)/epi/*.* $(OBJDIR)/ditd/*.*
+	rm -f $(PROGRAM) $(OBJDIR)/ditd/*.*
 
 makedirs:
 	mkdir -p $(OBJDIR)/ditd
-	mkdir -p $(OBJDIR)/ditd/system
-	mkdir -p $(OBJDIR)/epi
+	mkdir -p $(OBJDIR)/ditd/glutess
 
 #updaterev:
 #	gcc updaterevision/updaterevision.c -o ./updaterev
@@ -329,7 +328,25 @@ DREAMINTHEDARK: $(TARGET)
 #	cp $(TARGET) $(FIRSTREAD)
 #	genisoimage -V DC_APP -G slave/SDIP.BIN -l -J -R -o slave.iso slave/data $(FIRSTREAD)
 #	rm $(TARGET) $(FIRSTREAD)
+#	$(OBJDIR)/ditd/glutess/main.o     \
+# ---------- TESS ---------------
 
+GLUTESS_OBJS= \
+	$(OBJDIR)/ditd/glutess/dict.o     \
+	$(OBJDIR)/ditd/glutess/geom.o     \
+	$(OBJDIR)/ditd/glutess/memalloc.o     \
+	$(OBJDIR)/ditd/glutess/mesh.o     \
+	$(OBJDIR)/ditd/glutess/normal.o     \
+	$(OBJDIR)/ditd/glutess/priorityq.o     \
+#	$(OBJDIR)/ditd/glutess/priorityq-heap.o      \
+	$(OBJDIR)/ditd/glutess/render.o     \
+	$(OBJDIR)/ditd/glutess/sweep.o     \
+	$(OBJDIR)/ditd/glutess/tess.o     \
+	$(OBJDIR)/ditd/glutess/tessellate.o     \
+	$(OBJDIR)/ditd/glutess/tessmono.o 
+	
+$(OBJDIR)/glutess/%.o: src/%.c
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 # ---------- EDGE ---------------
 
@@ -358,7 +375,6 @@ DITD_OBJS= \
     $(OBJDIR)/ditd/mainLoop.o \
     $(OBJDIR)/ditd/music.o \
     $(OBJDIR)/ditd/object.o \
-    $(OBJDIR)/ditd/osystemSDL.o \
     $(OBJDIR)/ditd/osystemSDL_GL.o \
     $(OBJDIR)/ditd/pak.o \
     $(OBJDIR)/ditd/polys.o \
@@ -378,9 +394,6 @@ DITD_OBJS= \
     $(OBJDIR)/ditd/version.o \
     $(OBJDIR)/ditd/videoMode.o \
 	$(OBJDIR)/ditd/zv.o 
-
-#$(OBJDIR)/indark/%.o: src/%.cc
-#	$(CXX) $(CFLAGS) -o $@ -c $<
 
 $(OBJDIR)/ditd/%.o: src/%.c
 	$(CC) $(CFLAGS) -o $@ -c $<
@@ -427,11 +440,14 @@ $(OBJDIR)/ditd/%.o: src/%.c
 # $(OBJDIR)/epi/%.o: epi/%.cc
 	# $(CXX) $(CFLAGS) -o $@ -c $<
 
+
+
+
 # ---------- FINAL LINK STEP -----------
 
-$(PROGRAM) :$(DITD_OBJS) 
-			#$(EPI_OBJS)	    
-	$(CXX) $(CFLAGS) -o $@  $^ $(KOS_START) $(LDFLAGS) -lm -lstdc++ $(KOS_LIBS)
+$(PROGRAM) :$(GLUTESS_OBJS)   \
+			$(DITD_OBJS)
+	$(CC) $(CFLAGS) -o $@  $^ $(KOS_START) $(LDFLAGS) -lm -lstdc++ $(KOS_LIBS)
 
 
 #--- editor settings ------------
