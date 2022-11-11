@@ -2,3 +2,13 @@
 *~
 *.log
 *.status
+*.bin
+*.CDi
+*.elf
+*.COM
+*.EXE
+*.PAK
+/GLdc
+/obj_dc
+/AITD_PakEdit
+

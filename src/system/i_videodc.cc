@@ -17,22 +17,25 @@
 //
 //----------------------------------------------------------------------------
 
-#include <kos.h>
+//#include <kos.h>
 
 #include "i_defs.h"
 #include "i_defs_gl.h"
 
 #include <signal.h>
 
-#include "../m_argv.h"
-#include "../m_misc.h"
-#include "../r_modes.h"
+//#include "../m_argv.h"
+//#include "../m_misc.h"
+//#include "../r_modes.h"
 
-bool is_lowres;
-
+//bool is_lowres;
+int SCREENWIDTH;
+int SCREENHEIGHT;
+int SCREENBITS;
+bool FULLSCREEN;
 int graphics_shutdown = 0;
 
-cvar_c in_grab;
+//cvar_c in_grab;
 
 static int display_W, display_H;
 
@@ -42,32 +45,32 @@ void I_GrabCursor(bool enable)
 
 void I_StartupGraphics(void)
 {
-	int dc_region, video_cable;
-	bool is_NTSC;
+	//int dc_region, video_cable;
+	//bool is_NTSC;
 
-    dc_region = flashrom_get_region();
-    video_cable = vid_check_cable();
-    is_NTSC = (dc_region != FLASHROM_REGION_EUROPE && video_cable != CT_VGA) ? true : false;
-	I_Printf("I_StartupGraphics:\n  Dreamcast region: %s\n", dc_region == FLASHROM_REGION_JAPAN ? "Japan" :
-			dc_region == FLASHROM_REGION_US ? "US" : dc_region == FLASHROM_REGION_EUROPE ? "Europe" : "unknown");
-	I_Printf("  Video cable: %s\n", video_cable == CT_VGA ? "VGA" : video_cable == CT_COMPOSITE ? "Composite" :
-			video_cable == CT_RGB ? "SCART" : "unknown");
+   // dc_region = flashrom_get_region();
+    //video_cable = vid_check_cable();
+   // is_NTSC = (dc_region != FLASHROM_REGION_EUROPE && video_cable != CT_VGA) ? true : false;
+	//I_Printf("I_StartupGraphics:\n  Dreamcast region: %s\n", dc_region == FLASHROM_REGION_JAPAN ? "Japan" :
+	//		dc_region == FLASHROM_REGION_US ? "US" : dc_region == FLASHROM_REGION_EUROPE ? "Europe" : "unknown");
+	//I_Printf("  Video cable: %s\n", video_cable == CT_VGA ? "VGA" : video_cable == CT_COMPOSITE ? "Composite" :
+	//		video_cable == CT_RGB ? "SCART" : "unknown");
 
     glKosInit();
 
-	if (M_CheckParm("-nograb"))
-		in_grab = 0;
+	//if (M_CheckParm("-nograb"))
+	//	in_grab = 0;
 
 	// default kos startup is 640x480
 	display_W = 640;
 	display_H = 480;
 
-	is_lowres = false;
+	//is_lowres = false;
 
 	I_Printf("Desktop resolution: %dx%d\n", display_W, display_H);
 
 	// only two modes for PAL and VGA, four for NTSC to combat overscan
-	scrmode_c scr_mode;
+/* 	scrmode_c scr_mode;
 	if (is_NTSC)
 	{
 		scr_mode.width = 320;
@@ -94,7 +97,7 @@ void I_StartupGraphics(void)
 	scr_mode.depth = 16;
 	scr_mode.full = true;
 	R_AddResolution(&scr_mode);
-
+ */
 	I_Printf("I_StartupGraphics: initialisation OK\n");
 }
 

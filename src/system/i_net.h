@@ -32,15 +32,15 @@
 #else
 #include <unistd.h>
 #include <fcntl.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
+//#include <arpa/inet.h>
+//#include <netinet/in.h>
 #ifndef DREAMCAST
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
 #endif
-#include <sys/socket.h>
+//#include <sys/socket.h>
 #endif
 
 /* System-dependent definitions */

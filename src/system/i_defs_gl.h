@@ -28,7 +28,15 @@
 
 #define USING_GL_TYPES 1
 #define USE_GL 1
-#ifdef LINUX
+#ifdef DREAMCAST
+#include "GLdc/include/GL/gl.h"
+#include "GLdc/include/GL/glu.h"
+#include "GLdc/include/GL/glext.h"
+#include "GLdc/include/GL/glkos.h"
+#include <dc/vec3f.h>
+#include <dc/matrix.h> 
+#include <dc/pvr.h>
+#elif  LINUX
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
@@ -41,16 +49,31 @@
 #endif
 
 //#include "GLdc/include/GL/gl.h"
-#ifdef DREAMCAST
-#include "GLdc/include/GL/gl.h"
-#include "GLdc/include/GL/glu.h"
-#include "GLdc/include/GL/glext.h"
-#include "GLdc/include/GL/glkos.h"
-#include <dc/vec3f.h>
-#include <dc/matrix.h> 
-#include <dc/pvr.h>
-#endif
+/* struct GLUquadric
+{
+    GLint       normals;
+    GLboolean   textureCoords;
+    GLint       orientation;
+    GLint       drawStyle;
+    void        (* errorCallback)( GLint );
+};
 
+typedef struct GLUquadric GLUquadric;
+typedef GLUquadric GLUquadricObj;
+/* Internal convenience typedefs
+typedef void* (_GLUfuncptr)();
+
+GLUquadric* gluNewQuadric(void);
+void gluDeleteQuadric(GLUquadric*);
+void gluQuadricCallback(GLUquadric*, GLenum, _GLUfuncptr);
+void gluQuadricNormals(GLUquadric*, GLenum);
+void gluQuadricTexture(GLUquadric*, GLboolean);
+void gluQuadricOrientation(GLUquadric*, GLenum);
+void gluQuadricDrawStyle(GLUquadric*, GLenum);
+void gluCylinder(GLUquadric*, GLfloat, GLfloat, GLfloat, GLint, GLint);
+void gluDisk(GLUquadric*, GLfloat, GLfloat, GLint, GLint);
+void gluPartialDisk(GLUquadric*, GLfloat, GLfloat, GLint, GLint, GLfloat, GLfloat);
+void gluSphere(GLUquadric*, GLfloat, GLint, GLint); */
 
 #endif /* __SYSTEM_SPECIFIC_DEFS_OPENGL__ */
 
